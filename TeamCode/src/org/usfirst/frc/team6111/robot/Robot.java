@@ -141,28 +141,23 @@ String gameData;
 	 */
 	@Override
 	public void teleopPeriodic() {
-
-		/**
-		 * The "speed" variable is used to emulate a 2-speed shifter. When Driver 1
-		 * needs more precise control, he'll signal Driver 2 to hit the Left Bumper. The
-		 * Right Bumper will toggle it back.
+/**
+		 * The "speed" variable is used to throttle speed. When Driver 1
+		 * needs more precise control, he'll signal Driver 2 to lower the slider(3) on the Joystick. 
+		 * He can raise the slider to increase speed again.
+		 * .
 		 */
-		if (gamepad2.getRawButton(5)) {
-			speed = 0.5;
-		}
-		if (gamepad2.getRawButton(6)) {
-			speed = 1.0;
-		}
+		speed = 1.0 - (gamepad2.getRawAxis(3)*0.5);
 
 		/**
 		 * The "flip" variable allows us to toggle which side of the robot is front.
 		 * When Driver 1 wants the arm side to be front, he'll signal Driver 2 to hit
-		 * the A button. The B button will toggle it back.
+		 * the button 11. Button 12 will toggle it back.
 		 */
-		if (gamepad2.getRawButton(1)) {
+		if (gamepad2.getRawButton(12)) {
 			flip = false;
 		}
-		if (gamepad2.getRawButton(2)) {
+		if (gamepad2.getRawButton(12)) {
 			flip = true;
 		}
 
@@ -189,15 +184,14 @@ String gameData;
 			IntakeR.set(0);
 		}
 
-		// Driver 2 controls the arm with Left & Right Triggers
-		if (gamepad2.getRawAxis(2) > 0) {
+		// Driver 2 controls the arm with the Joystick trigger (1) and button 2.
+		if (gamepad2.getRawButton(2)) {
 			Arm.set(-.4);
-		} else if (gamepad2.getRawAxis(3) > 0) {
+		} else if (gamepad2.getRawButton(1)) {
 			Arm.set(1);
 		} else {
 			Arm.set(0);
 		}
-
 	}
 
 	/**
