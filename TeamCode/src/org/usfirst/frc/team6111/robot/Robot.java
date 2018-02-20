@@ -32,6 +32,22 @@ public class Robot extends IterativeRobot {
 	private Spark Arm = new Spark(4);
 	public boolean flip = true;
 	public double speed = 1.0;
+	
+	public void Forward(double speed) {
+		m_robotDrive.tankDrive(speed, speed);
+	}
+
+	public void Right(double speed) {
+		m_robotDrive.tankDrive(speed, 0);
+	}
+
+	public void Left(double speed) {
+		m_robotDrive.tankDrive(0, speed);
+	}
+
+	public void armLaunch(double power) {
+		Arm.set(power);
+	}
 
 	/**
 	 * This function is run when the robot is first started up and should be used
@@ -56,32 +72,59 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousPeriodic() {
+String gameData;
+		gameData = DriverStation.getInstance().getGameSpecificMessage();
+		if (gameData.length() > 0) {
+			if (gameData.charAt(0) == 'L') {
+				// Put left auto code here
 
-		// Drive for 2 seconds
-		while (m_timer.get() < 2.4) {
-			m_robotDrive.arcadeDrive(0.75, 0.27); // drive forwards half speed
-		}
-		m_robotDrive.arcadeDrive(0.0, 0.0); // stop robot
+				if (m_timer.get() < 1.0) {
+					Forward(.6);
+				} else if (m_timer.get() < 1.55) {
+					Left(0.75);
+				} else if (m_timer.get() < 3.1) {
+					Forward(0.6);
+				} else if (m_timer.get() < 3.7){
+					Right(.75);
+				}
+				else if(m_timer.get() < 5.4) {
+					Forward(.6);
+				}
+				else if (m_timer.get() < 6.4) {
+					armLaunch(1.0);
+				}
+				else if (m_timer.get() < 9.4) {
+					armLaunch(-.2);
+				}
+				else {
+					m_robotDrive.tankDrive(0, 0);
+					Arm.set(0);
+				}
 
-		m_timer.reset();
-
-		// Turn Right
-		while (m_timer.get() < 0.55) {
-			m_robotDrive.tankDrive(.75, 0);
-		}
-		m_robotDrive.tankDrive(0.0, 0.0);
-
-		m_timer.reset();
-
-		// Launch Cube
-		while (m_timer.get() < 1.0) {
-			Arm.set(1);
-		}
-
-		Arm.set(0);
-		// For the love of God, stop!!!
-		while (m_timer.get() < 30.0) {
-			m_robotDrive.arcadeDrive(0, 0);
+			} else {
+				// Put right auto code here
+				if (m_timer.get() < 1.0) {
+					Forward(.6);
+				} else if (m_timer.get() < 1.55) {
+					Right(0.75);
+				} else if (m_timer.get() < 3.05) {
+					Forward(0.6);
+				} else if (m_timer.get() < 3.55){
+					Left(.75);
+				} else if (m_timer.get() < 4.8) {
+					Forward(.6);
+				}
+				else if (m_timer.get() < 5.8) {
+					armLaunch(1.0);
+				}
+				else if (m_timer.get() < 8.8) {
+					armLaunch(-.2);
+				}
+				else {
+					m_robotDrive.tankDrive(0, 0);
+					Arm.set(0);
+				}
+			}
 		}
 
 	}
